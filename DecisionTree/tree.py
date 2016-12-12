@@ -94,7 +94,7 @@ def splitContinuousData(dataSet,axis):
         temp = i[0:axis]
         i = temp.extend(i[axis+1:])
 
-    splitData = {'ponit':bestSplitPoint,'small than %f' %float(bestSplitPoint):bestFront,'big than %f' %float(bestSplitPoint):bestBack}
+    splitData = {'point':bestSplitPoint,'small than %f' %float(bestSplitPoint):bestFront,'big than %f' %float(bestSplitPoint):bestBack}
     return splitData,bestSplitPoint,bestEntroy
 
 
@@ -125,8 +125,8 @@ def calculateBestAttribute(dataSet,labelSign,Label):
             bestGain = tempGain
             bestFeature = i
             bestClassSet = tempClassSet
-        print 'feature %s is %f' %(dataSet[0][i],tempGain)
-    print 'bestFeature is %d' %bestFeature
+    #     print 'feature %s is %f' %(dataSet[0][i],tempGain)
+    # print 'bestFeature is %d' %bestFeature
     return bestFeature,bestClassSet
 
 def create(filename,labelSign):
@@ -155,7 +155,7 @@ def creatTree(dataSet,labelVec,labelSign,Label):
     tree = {sign:{}}
     tree[sign] = classSet
     for key in classSet:
-        if key == 'ponit':
+        if key == 'point':
             continue
         labelSign.remove(choosedLabelSign)
         tree[sign][key] = creatTree(classSet[key],labelVec,labelSign,Label)
@@ -167,13 +167,13 @@ def creatTree(dataSet,labelVec,labelSign,Label):
 def classify(trainfile,labelSign,testfile,testSign):
 
     tree = create(trainfile,labelSign)
-    testdata,testVec = loadData(testfile)
+    testdata,testVec = load(testfile)
     errorCount = 0.0
     for item in testdata:
-        result = classifier(tree,testdata,testVec,testSign)
+        result = classifier(tree,item,testVec,testSign)
         if result!=item[-1]:
             errorCount+=1
-        print 'item 1 classify result is %s, the real result is %s' %(result,item[-1])
+        print 'item %d classify result is %s, the real result is %s' %(testdata.index(item),result,item[-1])
     print 'the error rate is %f' %(float(errorCount)/len(testdata))
 
 
@@ -208,3 +208,7 @@ def test():
     sign = ['s','s','s','s','s','s','c','c']
     tree = create('trainData.csv',sign)
     print tree
+
+def testClass():
+    sign = ['s','s','s','s','s','s','c','c']
+    classify('trainData.csv',sign,'trainData.csv',sign)
