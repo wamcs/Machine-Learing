@@ -47,9 +47,9 @@ def splitScatterData(dataSet,axis):
 #基本思想是取连续值的中点，根据这些中点去划分，计算得到的信息熵，越小越好，但这样的计算量很大
 #考虑将这些特征值排序，只有在决策属性发生改变的地方才需要切开
 def splitContinuousData(dataSet,axis):
-    print '=========='
-    print axis
-    print len(dataSet[0])
+    # print '=========='
+    # print axis
+    # print len(dataSet[0])
     splitPoints = []
     sortPoints = sorted(dataSet,key = lambda x:x[axis])
 
@@ -75,7 +75,7 @@ def splitContinuousData(dataSet,axis):
                 back.append(dataSet[i])
         frontEnt = calculateEntropy(front)
         backEnt = calculateEntropy(back)
-        tempEnt = frontEnt + backEnt
+        tempEnt = (float(len(front))/num)*frontEnt + (float(len(back))/num)*backEnt
         if bestEntroy<0:
             bestEntroy = tempEnt
             bestFront = front
@@ -99,7 +99,7 @@ def splitContinuousData(dataSet,axis):
 
 
 def calculateBestAttribute(dataSet,labelSign,Label):
-    print '++'
+    # print '++'
     attrNum = len(dataSet[0])-1
     num = float(len(dataSet))
     baseEntropy = calculateEntropy(dataSet)
@@ -114,17 +114,18 @@ def calculateBestAttribute(dataSet,labelSign,Label):
             ent = 0.0
             for key in tempClassSet:
                 prob = len(tempClassSet[key])/num
-                ent += prob*log(prob,2)
+                ent += prob*calculateEntropy(tempClassSet[key])
             tempGain = baseEntropy - ent
 
         elif labelSign[i] == Label[0]:
             tempClassSet,bestSplitPoint,bestEntroy = splitContinuousData(dataSet,i)
-            tempGain = baseEntropy - ent
+            tempGain = baseEntropy - bestEntroy
 
         if (bestGain < tempGain):
             bestGain = tempGain
             bestFeature = i
             bestClassSet = tempClassSet
+        print 'feature %s is %f' %(dataSet[0][i],tempGain)
     print 'bestFeature is %d' %bestFeature
     return bestFeature,bestClassSet
 
@@ -141,24 +142,25 @@ def create(filename,labelSign):
     return tree
 
 def creatTree(dataSet,labelVec,labelSign,Label):
-    print '*****'
-    print labelSign
+    # print '*****'
+    # print labelSign
     vec = [example[-1] for example in dataSet]
     if len(set(vec)) == 1:
         return vec[0]
 
     feature,classSet = calculateBestAttribute(dataSet,labelSign,Label)
     choosedLabelSign = labelSign[feature]
-    labelSign.remove(choosedLabelSign)
     sign = labelVec[feature]
+    labelVec.remove(sign)
     tree = {sign:{}}
     tree[sign] = classSet
     for key in classSet:
         if key == 'ponit':
             continue
+        labelSign.remove(choosedLabelSign)
         tree[sign][key] = creatTree(classSet[key],labelVec,labelSign,Label)
-        # labelSign.insert(feature,choosedLabelSign)
-
+        labelSign.insert(feature,choosedLabelSign)
+    labelVec.insert(feature,sign)
     return tree
 
 
