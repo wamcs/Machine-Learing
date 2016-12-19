@@ -133,8 +133,8 @@ def splitContinuousData(dataSet, axis):
 
 # 使用C4.5决策树中的信息熵增益率来进行比较 (貌似有问题，连续值如何处理)
 def calculateBestAttribute(dataSet, labelSign, Label):
-    print '++'
-    print len(dataSet[0])
+    # print '++'
+    # print len(dataSet[0])
     attrNum = len(dataSet[0]) - 1
     num = float(len(dataSet))
     baseEntropy = calculateEntropy(dataSet)
@@ -164,8 +164,8 @@ def calculateBestAttribute(dataSet, labelSign, Label):
             bestGain = tempGain
             bestFeature = i
             bestClassSet = tempClassSet
-        print 'feature %s is %f' %(dataSet[0][i],tempGain)
-    print 'bestFeature is %d' %bestFeature
+    #     print 'feature %s is %f' %(dataSet[0][i],tempGain)
+    # print 'bestFeature is %d' %bestFeature
 
     return bestFeature, bestClassSet
 
