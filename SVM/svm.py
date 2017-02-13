@@ -1,6 +1,7 @@
 # -*- coding:utf-8 -*-
 from numpy import *
 
+# 代码来自《机器学习实战》
 class optStruct:
     def __init__(self,dataMatIn, classLabels, C, toler, kTup):  # Initialize the structure with the parameters
         self.X = dataMatIn
